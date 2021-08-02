@@ -11,7 +11,7 @@ const convertWithOptions = (document, format, filter, options, callback) => {
     const asyncOptions = (options || {}).asyncOptions || {};
     const tempDir = tmp.dirSync({prefix: 'libreofficeConvert_', unsafeCleanup: true, ...tmpOptions});
     const installDir = tmp.dirSync({prefix: 'soffice', unsafeCleanup: true, ...tmpOptions});
-    let userInstallation = `file://${installDir.name}`;
+    let userInstallation = `-env:UserInstallation=file://${installDir.name}`;
     return async.auto({
         soffice: (callback) => {
             let paths = [];
@@ -21,7 +21,7 @@ const convertWithOptions = (document, format, filter, options, callback) => {
                 case 'linux': paths = ['/usr/bin/libreoffice', '/usr/bin/soffice'];
                     break;
                 case 'win32':
-                    userInstallation = `file:///${installDir.name}`;
+                    userInstallation = ``;
                     paths = [
                         path.join(process.env['PROGRAMFILES(X86)'], 'LIBREO~1/program/soffice.exe'),
                         path.join(process.env['PROGRAMFILES(X86)'], 'LibreOffice/program/soffice.exe'),
@@ -46,7 +46,7 @@ const convertWithOptions = (document, format, filter, options, callback) => {
         },
         saveSource: callback => fs.writeFile(path.join(tempDir.name, 'source'), document, callback),
         convert: ['soffice', 'saveSource', (results, callback) => {
-            let command = `-env:UserInstallation=${userInstallation} --headless --convert-to ${format}`;
+            let command = `${userInstallation} --headless --convert-to ${format}`;
             if (filter !== undefined) {
                 command += `:"${filter}"`;
             }
