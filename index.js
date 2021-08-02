@@ -20,12 +20,13 @@ const convertWithOptions = (document, format, filter, options, callback) => {
                     break;
                 case 'linux': paths = ['/usr/bin/libreoffice', '/usr/bin/soffice'];
                     break;
-                case 'win32': paths = [
-                    path.join(process.env['PROGRAMFILES(X86)'], 'LIBREO~1/program/soffice.exe'),
-                    path.join(process.env['PROGRAMFILES(X86)'], 'LibreOffice/program/soffice.exe'),
-                    path.join(process.env.PROGRAMFILES, 'LibreOffice/program/soffice.exe'),
+                case 'win32':
                     userInstallation = `file:///${installDir.name}`;
-                ];
+                    paths = [
+                        path.join(process.env['PROGRAMFILES(X86)'], 'LIBREO~1/program/soffice.exe'),
+                        path.join(process.env['PROGRAMFILES(X86)'], 'LibreOffice/program/soffice.exe'),
+                        path.join(process.env.PROGRAMFILES, 'LibreOffice/program/soffice.exe'),
+                    ];
                     break;
                 default:
                     return callback(new Error(`Operating system not yet supported: ${process.platform}`));
